@@ -1,0 +1,37 @@
+services:
+  # MongoDB Database
+  - type: pserv
+    name: mongodb
+    env: docker
+    repo: https://github.com/render-templates/mongodb
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: MONGO_INITDB_ROOT_USERNAME
+        value: admin
+      - key: MONGO_INITDB_ROOT_PASSWORD
+        value: password123
+      - key: MONGO_INITDB_DATABASE
+        value: coinbase-clone
+
+  # Backend API Server
+  - type: web
+    name: coinbase-clone-backend
+    runtime: node
+    plan: free
+    repo: https://github.com/Neequaye-Ashaley/clone-coinbase-backends
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        value: mongodb://admin:password123@mongodb:27017/coinbase-clone?authSource=admin
+      - key: JWT_SECRET
+        value: your-super-secret-jwt-key-change-this-in-production
+    domains:
+      - coinbase-clone-backend.onrender.com
