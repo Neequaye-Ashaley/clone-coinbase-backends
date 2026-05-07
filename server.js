@@ -21,7 +21,10 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB first, then setup routes
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, {
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+})
   .then(() => {
     console.log('✅ Connected to MongoDB');
 
@@ -45,5 +48,6 @@ mongoose.connect(process.env.MONGODB_URI)
   })
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err);
+    console.error('   Please check your MONGODB_URI in .env file');
     process.exit(1);
   });
